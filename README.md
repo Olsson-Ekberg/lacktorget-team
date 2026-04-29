@@ -1,11 +1,17 @@
 # lacktorget-team
 
-Shared Claude config and tooling for Kenny + Johannes.
+Shared Claude config and tooling for the Olsson-Ekberg team.
 
-## Mac setup (one-liner)
+## Setup — one-liner per platform
 
+**Mac (Johannes):**
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-team/main/scripts/setup-mac.sh)
+```
+
+**Windows (Kenny) — run PowerShell as Administrator:**
+```powershell
+irm https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-team/main/scripts/setup-windows.ps1 | iex
 ```
 
 ## What it installs
@@ -23,8 +29,6 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-tea
 | `feature-builder` | Build a new feature end-to-end with tests |
 | `error-detective` | Diagnose a stack trace or bug |
 | `code-reviewer` | PASS/FAIL review before deploying |
-
-Use with: `/agent feature-builder` or `claude --agent feature-builder`
 
 ## Adding Fortnox / Extend ERP / WordPress
 
