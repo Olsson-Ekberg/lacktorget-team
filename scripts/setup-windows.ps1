@@ -100,8 +100,31 @@ if (-not (Test-Path $bashrc) -or -not (Select-String -Path $bashrc -Pattern "Git
     ok ".bashrc updated with gh path"
 }
 
-# 7. Clone project
-step "Step 7: Clone lacktorget-intel"
+# 7. Plugins
+step "Step 7: Claude plugins"
+claude plugin marketplace add obra/superpowers-marketplace 2>&1 | Select-String "Successfully|already" | Out-Null
+claude plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill 2>&1 | Select-String "Successfully|already" | Out-Null
+
+$plugins = @(
+    "feature-dev@claude-plugins-official",
+    "frontend-design@claude-plugins-official",
+    "code-review@claude-plugins-official",
+    "pr-review-toolkit@claude-plugins-official",
+    "security-guidance@claude-plugins-official",
+    "hookify@claude-plugins-official",
+    "ralph-loop@claude-plugins-official",
+    "typescript-lsp@claude-plugins-official",
+    "commit-commands@claude-plugins-official",
+    "superpowers@superpowers-marketplace",
+    "ui-ux-pro-max@ui-ux-pro-max-skill"
+)
+foreach ($plugin in $plugins) {
+    claude plugin install $plugin 2>&1 | Out-Null
+    ok "plugin: $plugin"
+}
+
+# 8. Clone project
+step "Step 8: Clone lacktorget-intel"
 New-Item -ItemType Directory -Force -Path $WorkDir | Out-Null
 if (Test-Path "$WorkDir\lacktorget-intel") {
     warn "~/work/lacktorget-intel exists — pulling latest..."
@@ -111,8 +134,8 @@ if (Test-Path "$WorkDir\lacktorget-intel") {
 }
 ok "lacktorget-intel ready at $WorkDir\lacktorget-intel"
 
-# 8. npm install
-step "Step 8: npm install"
+# 9. npm install
+step "Step 9: npm install"
 Set-Location "$WorkDir\lacktorget-intel"
 npm install
 ok "dependencies installed"

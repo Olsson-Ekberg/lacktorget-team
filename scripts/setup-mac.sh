@@ -73,7 +73,29 @@ for cmd in wrap-up checkpoint fix-issue orchestrate tdd test-fix; do
   ok "command: $cmd"
 done
 
-# 7. Clone projects
+# 7. Plugins
+echo ""
+echo "==> Step 7: Claude plugins"
+claude plugin marketplace add obra/superpowers-marketplace 2>&1 | grep -E "Successfully|already" || true
+claude plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill 2>&1 | grep -E "Successfully|already" || true
+
+for plugin in \
+  "feature-dev@claude-plugins-official" \
+  "frontend-design@claude-plugins-official" \
+  "code-review@claude-plugins-official" \
+  "pr-review-toolkit@claude-plugins-official" \
+  "security-guidance@claude-plugins-official" \
+  "hookify@claude-plugins-official" \
+  "ralph-loop@claude-plugins-official" \
+  "typescript-lsp@claude-plugins-official" \
+  "commit-commands@claude-plugins-official" \
+  "superpowers@superpowers-marketplace" \
+  "ui-ux-pro-max@ui-ux-pro-max-skill"; do
+  claude plugin install "$plugin" 2>&1 | grep -E "Successfully|already" || true
+  ok "plugin: $plugin"
+done
+
+# 8. Clone projects
 echo ""
 echo "==> Step 7: Clone lacktorget-intel"
 mkdir -p ~/work
@@ -85,9 +107,9 @@ else
 fi
 ok "lacktorget-intel ready"
 
-# 8. Install deps
+# 10. Install deps
 echo ""
-echo "==> Step 8: npm install"
+echo "==> Step 10: npm install"
 cd ~/work/lacktorget-intel && npm install
 ok "dependencies installed"
 
