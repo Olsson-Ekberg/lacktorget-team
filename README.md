@@ -5,7 +5,7 @@ Shared Claude config and tooling for Kenny + Johannes.
 ## Mac setup (one-liner)
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/kennyolofsson23-netizen/lacktorget-team/main/scripts/setup-mac.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-team/main/scripts/setup-mac.sh)
 ```
 
 ## What it installs

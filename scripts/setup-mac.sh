@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Lacktorget team — Mac setup (Kenny or Johannes)
-# bash <(curl -fsSL https://raw.githubusercontent.com/kennyolofsson23-netizen/lacktorget-team/main/scripts/setup-mac.sh)
+# bash <(curl -fsSL https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-team/main/scripts/setup-mac.sh)
 set -euo pipefail
 
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
 ok()   { echo -e "${GREEN}  [ok]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [!]${NC} $*"; }
 
-REPO_RAW="https://raw.githubusercontent.com/kennyolofsson23-netizen/lacktorget-team/main"
+REPO_RAW="https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-team/main"
 
 echo ""
 echo "==> Lacktorget team — Mac setup"
@@ -76,7 +76,7 @@ if [ -d ~/work/lacktorget-intel ]; then
   warn "~/work/lacktorget-intel exists — pulling latest..."
   git -C ~/work/lacktorget-intel pull
 else
-  gh repo clone kennyolofsson23-netizen/lacktorget-intel ~/work/lacktorget-intel
+  gh repo clone Olsson-Ekberg/lacktorget-intel ~/work/lacktorget-intel
 fi
 ok "lacktorget-intel ready"
 
