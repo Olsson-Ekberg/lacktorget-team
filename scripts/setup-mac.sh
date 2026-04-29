@@ -8,46 +8,61 @@ ok()   { echo -e "${GREEN}  [ok]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [!]${NC} $*"; }
 
 REPO_RAW="https://raw.githubusercontent.com/Olsson-Ekberg/lacktorget-team/main"
+NODE_VERSION="v22.20.0"
+GH_VERSION="2.92.0"
 
 echo ""
 echo "==> Lacktorget team — Mac setup"
 echo ""
 
-# 1. Homebrew
-echo "==> Step 1: Homebrew"
-if ! command -v brew &>/dev/null; then
-  warn "Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
+# 1. Node.js — install from official .pkg (bypasses Homebrew, which fails on Tier 2 macOS configs)
+echo "==> Step 1: Node.js"
+if ! command -v node &>/dev/null; then
+  warn "Installing Node.js ${NODE_VERSION}..."
+  curl -fsSL "https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}.pkg" -o /tmp/node.pkg
+  sudo installer -pkg /tmp/node.pkg -target /
 fi
-ok "brew $(brew --version | head -1)"
-
-# 2. GitHub CLI
-echo ""
-echo "==> Step 2: GitHub CLI"
-if ! command -v gh &>/dev/null; then brew install gh; fi
-ok "gh $(gh --version | head -1)"
-
-# 3. Node
-echo ""
-echo "==> Step 3: Node.js"
-if ! command -v node &>/dev/null; then brew install node; fi
 ok "node $(node --version)"
 
-# 4. Claude Code
+# 2. GitHub CLI — install from official .pkg
 echo ""
-echo "==> Step 4: Claude Code"
-if ! command -v claude &>/dev/null; then npm install -g @anthropic-ai/claude-code; fi
+echo "==> Step 2: GitHub CLI"
+if ! command -v gh &>/dev/null; then
+  warn "Installing gh ${GH_VERSION}..."
+  curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_macOS_universal.pkg" -o /tmp/gh.pkg
+  sudo installer -pkg /tmp/gh.pkg -target /
+fi
+ok "gh $(gh --version | head -1)"
+
+# 3. Claude Code — sudo required for global npm install on macOS
+echo ""
+echo "==> Step 3: Claude Code"
+if ! command -v claude &>/dev/null; then
+  warn "Installing Claude Code..."
+  sudo npm install -g @anthropic-ai/claude-code
+fi
 ok "claude installed"
 
-# 5. GitHub auth
+# 4. GitHub auth
 echo ""
-echo "==> Step 5: GitHub login"
+echo "==> Step 4: GitHub login"
 if ! gh auth status &>/dev/null; then
   warn "Logging in to GitHub..."
   gh auth login
 fi
 ok "logged in as $(gh api user --jq .login)"
+
+# 5. Auto-accept any pending repo invitations (so the clone in step 8 works)
+echo ""
+echo "==> Step 5: Accept pending repo invitations"
+INVITES=$(gh api user/repository_invitations --jq '.[].id' 2>/dev/null || echo "")
+if [ -n "$INVITES" ]; then
+  for id in $INVITES; do
+    gh api "user/repository_invitations/$id" -X PATCH && ok "accepted invitation $id"
+  done
+else
+  ok "no pending invitations"
+fi
 
 # 6. ~/.claude config
 echo ""
@@ -97,7 +112,7 @@ done
 
 # 8. Clone projects
 echo ""
-echo "==> Step 7: Clone lacktorget-intel"
+echo "==> Step 8: Clone lacktorget-intel"
 mkdir -p ~/work
 if [ -d ~/work/lacktorget-intel ]; then
   warn "~/work/lacktorget-intel exists — pulling latest..."
@@ -107,9 +122,9 @@ else
 fi
 ok "lacktorget-intel ready"
 
-# 10. Install deps
+# 9. Install deps
 echo ""
-echo "==> Step 10: npm install"
+echo "==> Step 9: npm install"
 cd ~/work/lacktorget-intel && npm install
 ok "dependencies installed"
 
