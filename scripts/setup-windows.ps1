@@ -62,6 +62,7 @@ if ($LASTEXITCODE -ne 0) {
 step "Step 5: Claude config ($ClaudeDir)"
 New-Item -ItemType Directory -Force -Path $ClaudeDir | Out-Null
 New-Item -ItemType Directory -Force -Path "$ClaudeDir\agents" | Out-Null
+New-Item -ItemType Directory -Force -Path "$ClaudeDir\commands" | Out-Null
 
 Invoke-WebRequest "$REPO_RAW/dotfiles/settings.json" -OutFile "$ClaudeDir\settings.json" -UseBasicParsing
 ok "settings.json written"
@@ -75,6 +76,11 @@ ok ".mcp.json written"
 foreach ($agent in @("feature-builder", "error-detective", "code-reviewer")) {
     Invoke-WebRequest "$REPO_RAW/agents/$agent.md" -OutFile "$ClaudeDir\agents\$agent.md" -UseBasicParsing
     ok "agent: $agent"
+}
+
+foreach ($cmd in @("wrap-up", "checkpoint", "fix-issue", "orchestrate", "tdd", "test-fix")) {
+    Invoke-WebRequest "$REPO_RAW/commands/$cmd.md" -OutFile "$ClaudeDir\commands\$cmd.md" -UseBasicParsing
+    ok "command: $cmd"
 }
 
 # 6. Add gh to permanent PATH if not already there

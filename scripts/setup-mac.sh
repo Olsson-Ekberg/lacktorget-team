@@ -52,7 +52,7 @@ ok "logged in as $(gh api user --jq .login)"
 # 6. ~/.claude config
 echo ""
 echo "==> Step 6: Claude config (~/.claude)"
-mkdir -p ~/.claude ~/.claude/agents
+mkdir -p ~/.claude ~/.claude/agents ~/.claude/commands
 
 curl -fsSL "$REPO_RAW/dotfiles/settings.json" > ~/.claude/settings.json
 ok "settings.json written"
@@ -66,6 +66,11 @@ ok ".mcp.json written"
 for agent in feature-builder error-detective code-reviewer; do
   curl -fsSL "$REPO_RAW/agents/$agent.md" > ~/.claude/agents/$agent.md
   ok "agent: $agent"
+done
+
+for cmd in wrap-up checkpoint fix-issue orchestrate tdd test-fix; do
+  curl -fsSL "$REPO_RAW/commands/$cmd.md" > ~/.claude/commands/$cmd.md
+  ok "command: $cmd"
 done
 
 # 7. Clone projects
